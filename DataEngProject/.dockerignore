@@ -1,0 +1,9 @@
+# Ignore specific directories
+dossiers_a_supprimer/
+logs/
+air_quality_env2/ #venv
+# Ignore specific files
+api_key.json
+commandes.txt
+tasksToComplete.txt
+jars/spark-sql-kafka-0-10_2.12-3.5.4.jar

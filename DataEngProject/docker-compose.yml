@@ -1,0 +1,304 @@
+version: "3.7"
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:5.5.3
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    networks:
+      - my-network
+
+  kafka:
+    image: confluentinc/cp-enterprise-kafka:5.5.3
+    depends_on:
+      - zookeeper
+    ports:
+      - 29092:29092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_MESSAGE_MAX_BYTES: 10485760        # Limite de 10 Mo pour les messages (par défaut 1 Mo)
+      KAFKA_REPLICA_FETCH_MAX_BYTES: 10485760 # Limite pour les réplicas
+      KAFKA_FETCH_MAX_BYTES: 10485760         # Limite pour les consommateurs
+    networks:
+      - my-network
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "9092"]
+      interval: 10s
+      retries: 3
+      start_period: 30s
+
+  topic-init:
+    image: confluentinc/cp-enterprise-kafka:5.5.3
+    depends_on:
+      - kafka
+    volumes:
+      - ./init-topics.sh:/tmp/init-topics.sh
+    entrypoint:
+      - bash
+      - -c
+      - "/tmp/init-topics.sh"
+    networks:
+      - my-network
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry:5.5.3
+    environment:
+      - SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL=zookeeper:2181
+      - SCHEMA_REGISTRY_HOST_NAME=schema-registry
+      - SCHEMA_REGISTRY_LISTENERS=http://schema-registry:8081,http://localhost:8081
+    ports:
+      - 8081:8081
+    depends_on: [zookeeper, kafka]
+    networks:
+      - my-network
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8081/subjects"]
+      interval: 10s
+      retries: 3
+      start_period: 30s
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - my-network
+
+  control-center:
+    image: confluentinc/cp-enterprise-control-center:5.5.3
+    depends_on:
+      - kafka
+      - schema-registry
+    ports:
+      - "9021:9021"
+    environment:
+      CONTROL_CENTER_BOOTSTRAP_SERVERS: kafka:9092
+      CONTROL_CENTER_ZOOKEEPER_CONNECT: zookeeper:2181
+      CONTROL_CENTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      CONTROL_CENTER_CONNECT_CLUSTER: http://kafka-connect:8083
+      CONTROL_CENTER_REPLICATION_FACTOR: 1
+      PORT: 9021
+    networks:
+      - my-network
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:9021/"]
+      interval: 10s
+      retries: 3
+      start_period: 30s
+
+  spark-master:
+    build:
+      context: .
+      dockerfile: Dockerfile.spark
+    image: custom-spark:latest
+    container_name: spark-master
+    command: bin/spark-class org.apache.spark.deploy.master.Master
+    ports:
+      - "7077:7077"
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+    networks:
+      - my-network
+    volumes:
+      - ./spark:/opt/spark-apps/spark
+      - ./kafkaScripts:/opt/spark-apps/kafkaScripts
+      - ./requirements.txt:/opt/spark-apps/requirements.txt
+      - ./api_key.json:/opt/spark-apps/api_key.json
+      - ./jars:/opt/spark/jars
+
+  spark-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.spark
+    image: custom-spark:latest
+    container_name: spark-worker
+    command: bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
+    depends_on:
+      - spark-master
+    environment:
+      SPARK_MODE: worker
+      SPARK_WORKER_CORES: 2
+      SPARK_WORKER_MEMORY: 2g
+    ports:
+      - "8082:8082"
+    networks:
+      - my-network
+    volumes:
+      - ./spark:/opt/spark-apps/spark
+      - ./kafkaScripts:/opt/spark-apps/kafkaScripts
+      - ./requirements.txt:/opt/spark-apps/requirements.txt
+      - ./api_key.json:/opt/spark-apps/api_key.json
+      - ./jars:/opt/spark/jars
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      POSTGRES_USER: your_user
+      POSTGRES_PASSWORD: your_password
+      POSTGRES_DB: openaq
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./postgres-init:/docker-entrypoint-initdb.d
+    networks:
+      - my-network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"  # Port par défaut pour Grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin  # Nom d'utilisateur par défaut
+      - GF_SECURITY_ADMIN_PASSWORD=admin  # Mot de passe par défaut
+    depends_on:
+      - postgres  # Si vous souhaitez connecter Grafana à PostgreSQL pour visualiser les données
+    networks:
+      - my-network
+
+  airflow-webserver:
+    build:
+        context: .
+        dockerfile: Dockerfile.airflow
+    image: custom-airflow:latest
+    # image: apache/airflow:2.7.2
+    container_name: airflow-webserver
+    depends_on:
+      - postgres-airflow
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow_user:airflow_password@postgres-airflow:5432/airflow_db
+      AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+      AIRFLOW__API__AUTH_BACKEND: airflow.api.auth.backend.basic_auth  # Activer l'API REST avec authentification de base
+    ports:
+      - "8086:8086" # Port pour accéder à l'interface Web Airflow
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8086/health"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - ./spark:/opt/airflow/spark
+      - ./kafkaScripts:/opt/airflow/kafkaScripts
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./api_key.json:/opt/airflow/api_key.json
+      - ./jars:/opt/airflow/jars
+
+    command: ["airflow", "webserver", "--port", "8086"]
+    networks:
+      - my-network
+
+  airflow-scheduler:
+    build:
+        context: .
+        dockerfile: Dockerfile.airflow
+    image: custom-airflow:latest
+    container_name: airflow-scheduler
+    depends_on:
+      - airflow-webserver
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow_user:airflow_password@postgres-airflow:5432/airflow_db
+    volumes:
+      - ./spark:/opt/airflow/spark
+      - ./kafkaScripts:/opt/airflow/kafkaScripts
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./api_key.json:/opt/airflow/api_key.json
+      - ./jars:/opt/airflow/jars
+    command: ["airflow", "scheduler"]
+    networks:
+      - my-network
+
+  airflow-init:
+    build:
+        context: .
+        dockerfile: Dockerfile.airflow
+    image: custom-airflow:latest
+    container_name: airflow-init
+    # entrypoint: airflow db init
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow_user:airflow_password@postgres-airflow:5432/airflow_db
+    volumes:
+      - ./spark:/opt/airflow/spark
+      - ./kafkaScripts:/opt/airflow/kafkaScripts
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./api_key.json:/opt/airflow/api_key.json
+      - ./jars:/opt/airflow/jars
+    entrypoint: [
+      "/bin/bash",
+      "-c",
+      "airflow db upgrade && airflow users create --username admin --password admin --firstname Mehdi --lastname Admin --role Admin --email admin@example.com &&
+      airflow connections delete 'spark_default' || true &&
+      airflow connections add 'spark_default' \
+        --conn-type 'spark' \
+        --conn-host 'local' &&
+      echo 'Spark connection added successfully'
+      "
+    ]
+    networks:
+      - my-network
+
+  postgres-airflow:
+    image: postgres:latest
+    container_name: postgres-airflow
+    environment:
+      POSTGRES_USER: airflow_user
+      POSTGRES_PASSWORD: airflow_password
+      POSTGRES_DB: airflow_db
+    ports:
+      - "5433:5432" # Port différent de votre service PostgreSQL existant
+    volumes:
+      - postgres-airflow-data:/var/lib/postgresql/data
+    networks:
+      - my-network
+  supervisor:
+    build:
+      context: .
+      dockerfile: Dockerfile.supervisor
+    container_name: spark-supervisor
+    depends_on:
+      spark-master:
+        condition: service_healthy
+      # spark-worker:
+      #   condition: service_started
+      airflow-webserver:
+        condition: service_healthy
+    environment:
+      - AIRFLOW_BASE_URL=http://airflow-webserver:8086/api/v1
+      - DAG_ID=fetch_and_publish_to_kafka
+      - TASK_ID=fetch_and_publish_task
+      - USERNAME=admin
+      - PASSWORD=admin
+    volumes:
+      - ./spark:/opt/spark-apps/spark
+      - ./kafkaScripts:/opt/spark-apps/kafkaScripts
+      - ./requirements.txt:/opt/spark-apps/requirements.txt
+      - ./api_key.json:/opt/spark-apps/api_key.json
+      - ./jars:/opt/spark/jars
+    networks:
+      - my-network
+
+volumes:
+  mongo-data:
+  postgres-data:
+  postgres-init:
+  postgres-airflow-data:
+networks:
+  my-network:
+    driver: bridge

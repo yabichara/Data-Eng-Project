@@ -1,0 +1,27 @@
+FROM python:3.12-slim
+
+# Installer les dépendances nécessaires
+RUN apt-get update && apt-get install -y \
+    curl \
+    openjdk-17-jre-headless && \
+    rm -rf /var/lib/apt/lists/*
+
+# Installer Spark-submit via wget
+RUN curl -O https://archive.apache.org/dist/spark/spark-3.5.0/spark-3.5.0-bin-hadoop3.tgz && \
+    tar -xvf spark-3.5.0-bin-hadoop3.tgz -C /opt/ && \
+    rm spark-3.5.0-bin-hadoop3.tgz
+
+ENV SPARK_HOME=/opt/spark-3.5.0-bin-hadoop3
+ENV PATH="$SPARK_HOME/bin:$PATH"
+
+# Copier le fichier requirements.txt dans le conteneur
+COPY requirements.txt /opt/spark-apps/requirements.txt
+
+# Installer les dépendances Python
+RUN pip install --no-cache-dir -r /opt/spark-apps/requirements.txt
+
+# Copier le script supervisor.py dans le conteneur
+# COPY supervisor.py /opt/supervisor/supervisor.py
+
+# Commande d'entrée pour le conteneur
+CMD ["python", "/opt/spark-apps/spark/supervisor.py"]

@@ -1,0 +1,55 @@
+FROM apache/airflow:2.7.2
+
+USER root
+
+# Installer les dépendances nécessaires pour compiler Python et Java
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    wget \
+    curl \
+    libssl-dev \
+    zlib1g-dev \
+    libncurses5-dev \
+    libsqlite3-dev \
+    libreadline-dev \
+    libffi-dev \
+    libbz2-dev \
+    liblzma-dev \
+    default-libmysqlclient-dev \
+    software-properties-common \
+    openjdk-17-jdk \
+    procps \
+    && apt-get clean
+
+# Télécharger et compiler Python 3.12
+RUN wget https://www.python.org/ftp/python/3.12.8/Python-3.12.8.tgz && \
+    tar xvf Python-3.12.8.tgz && \
+    cd Python-3.12.8 && \
+    ./configure --enable-optimizations && \
+    make -j$(nproc) && \
+    make altinstall && \
+    cd .. && \
+    rm -rf Python-3.12.8 Python-3.12.8.tgz && \
+    update-alternatives --install /usr/bin/python python /usr/local/bin/python3.12 1 && \
+    update-alternatives --set python /usr/local/bin/python3.12 && \
+    python --version
+
+# Configurer JAVA_HOME et mettre à jour le PATH pour Java 17
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+ENV PATH=$JAVA_HOME/bin:$PATH
+
+# Copier les dépendances Airflow
+USER airflow
+COPY airflow_requirements.txt /requirements.txt
+RUN pip install --no-cache-dir -r /requirements.txt
+
+# Configurer la connexion Spark dans Airflow
+# USER airflow
+
+# Ajouter une étape pour configurer la connexion Spark
+# RUN airflow db init && \
+#     airflow connections delete 'spark_default' || true && \
+#     airflow connections add 'spark_default' \
+#     --conn-type 'spark' \
+#     --conn-host 'local' \
+#     --conn-extra '{"queue": "default", "deploy-mode": "client"}'
