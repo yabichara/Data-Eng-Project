@@ -8,13 +8,11 @@ import asyncio
 
 
 
-# Ajouter le chemin absolu de 'kafkaScripts' au PYTHONPATH
 current_dir = os.path.dirname(os.path.abspath(__file__))
 spark_path = os.path.join(current_dir, "../spark")
 sys.path.append(spark_path)
 
 from spark_stream import logging
-# Ajouter le chemin absolu de 'kafkaScripts' au PYTHONPATH
 current_dir = os.path.dirname(os.path.abspath(__file__))
 kafka_scripts_path = os.path.join(current_dir, "../kafkaScripts")
 sys.path.append(kafka_scripts_path)
