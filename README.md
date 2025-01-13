@@ -34,7 +34,11 @@ Before running the project, ensure you have:
 ---
 
 ## Project Structure
+Here is the following project structure:
 
+\`\`\`
+DataEngProject/ ├── .dockerignore ├── airflow_requirements.txt ├── docker-compose.yml ├── Dockerfile.airflow ├── Dockerfile.spark ├── Dockerfile.supervisor ├── Grafana_Dash.png ├── init-topics.sh ├── README.md ├── requirements.txt ├── init.py ├── dags/ │ └── initialize_pipeline_dag.py ├── img/ │ └── Project_architecture.jpeg ├── jars/ │ ├── postgresql-42.6.2.jar │ └── spark-sql-kafka-0-10_2.12-3.5.4.jar ├── kafkaScripts/ │ ├── KafkaProducer.py │ ├── OpenAQCollector.py │ └── init.py ├── postgres-init/ │ ├── airflow-init.sql │ └── init.sql └── spark/ ├── spark_process_dim_data.py ├── spark_stream.py ├── supervisor.py └── init.py
+\`\`\`
 ---
 
 ## Getting Started
@@ -65,6 +69,8 @@ The following services will be deployed:
 - PostgreSQL: For storing processed data.
 - Spark: For processing batch and real-time data.
 - Supervisor: For monitoring DAG progress and triggering Spark Streaming.
+- Zookeeper
+- Grafana
 
 ### 4. Access Airflow UI
 - Open your browser and go to ```http://localhost:8080```.
@@ -139,3 +145,5 @@ This project is licensed under the MIT License. See the LICENSE file for details
 ## Auteur
 
 *Ouazzani Jamil Mehdi* - [Votre profil GitHub](https://github.com/Mehdi-24-K4)
+
+This README provides all the necessary information while being concise and professional. Let me know if you'd like further refinements!
