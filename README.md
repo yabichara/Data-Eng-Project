@@ -47,7 +47,7 @@ cd DataEngProject
 ```
 
 ### 2. Set Up API Key for OpenAQ
-Create a file named api_key.json in the dags directory to store your OpenAQ API key:
+Create a file named ```api_key.json``` in the ```dags``` directory to store your OpenAQ API key:
 ```json
 {
   "New_API_KEY": "your_openaq_api_key"
