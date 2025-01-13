@@ -46,6 +46,19 @@ git clone https://github.com/Mehdi-24-K4/DataEngProject.git
 cd DataEngProject
 ```
 
+### 2. Set Up API Key for OpenAQ
+Create a file named api_key.json in the dags directory to store your OpenAQ API key:
+```json
+{
+  "New_API_KEY": "your_openaq_api_key"
+}
+```
+
+### 3. Build and Start Docker Services
+Run the following command to build and start the services:
+```bash
+docker-compose up -d --build
+```
 <!-- 
 ## Technologies Utilisées
 
