@@ -71,6 +71,7 @@ The following services will be deployed:
 - Log in with the default credentials:
   - Username: ```airflow```
   - Password: ```airflow```.
+  
 Enable and trigger the DAG named ```initialize_pipeline_dag```.
 
 ### 5. Monitor Spark Streaming
