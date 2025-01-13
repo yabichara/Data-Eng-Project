@@ -46,8 +46,6 @@ git clone https://github.com/Mehdi-24-K4/DataEngProject.git
 cd DataEngProject
 ```
 
----
-
 ### 2. Set Up API Key for OpenAQ
 Create a file named ```api_key.json``` in the ```dags``` directory to store your OpenAQ API key:
 ```json
@@ -55,8 +53,6 @@ Create a file named ```api_key.json``` in the ```dags``` directory to store your
   "New_API_KEY": "your_openaq_api_key"
 }
 ```
-
----
 
 ### 3. Build and Start Docker Services
 Run the following command to build and start the services:
@@ -70,16 +66,12 @@ The following services will be deployed:
 - Spark: For processing batch and real-time data.
 - Supervisor: For monitoring DAG progress and triggering Spark Streaming.
 
----
-
 ### 4. Access Airflow UI
 - Open your browser and go to ```http://localhost:8080```.
 - Log in with the default credentials:
   - Username: ```airflow```
   - Password: ```airflow```.
 Enable and trigger the DAG named ```initialize_pipeline_dag```.
-
----
 
 ### 5. Monitor Spark Streaming
 Once the DAG completes processing the dimensions, the Supervisor container detects when the last task begins and automatically triggers the Spark Streaming job. This job processes real-time measurements from Kafka and stores them in PostgreSQL.
