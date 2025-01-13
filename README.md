@@ -154,6 +154,26 @@ The database consists of:
 - Use Airflow to monitor task progress and job status.
 - Spark logs are available in the ```spark/logs``` directory.
 
+## Grafana Monitoring
+### Overview
+Grafana is used to monitor metrics and visualize data from the pipeline in a user-friendly dashboard. It connects directly to PostgreSQL to query real-time and historical data.
+
+### Key Features
+- *Pipeline Metrics*: View key metrics like task success rates and durations.
+- *Data Insights*: Monitor real-time air quality data stored in PostgreSQL.
+- *Custom Dashboards*: Visualize dimensions like parameters, locations, and country statistics.
+
+### Access Grafana
+1. Open your browser and go to: http://localhost:3000.
+2. Log in with default credentials:
+  - Username: admin
+  - Password: admin.
+3. Add a PostgreSQL data source with the following details:
+  - Host: postgres:5432
+  - Database: openaq
+  - Username: your_user
+  - Password: your_password.
+
 ## Troubleshooting
 ### Common Issues
 #### 1. API Rate Limits:
