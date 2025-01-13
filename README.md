@@ -1,23 +1,52 @@
-# Projet ETL pour l'Analyse des Données de la Qualité de l'Air en temps réel
+# OpenAQ Data Engineering Project
 
-Ce projet met en place un pipeline ETL (Extract, Transform, Load) pour l'analyse des données de qualité de l'air en temps réel en utilisant l'API OpenAQ. Les données sont extraites, transformées et chargées dans une base de données PostgreSQL avec un schéma en étoile optimisé pour l'analyse. Le pipeline est orchestré via Airflow, et le traitement des données est accéléré grâce à Apache Spark.
+This project is a robust pipeline for extracting, processing, and storing air quality data from the [OpenAQ API](https://docs.openaq.org/). It integrates real-time data processing, batch processing, and streaming using cutting-edge technologies like Kafka, Spark, PostgreSQL, and Airflow.
 
-## Description
+## Key Features
+1. **Data Extraction**: Fetches air quality data (parameters, locations, and countries) from the OpenAQ API.
+2. **Kafka Streaming**: Utilizes Kafka for streaming data between components.
+3. **Batch Processing**: Processes dimension data with Apache Spark.
+4. **Real-Time Streaming**: Processes real-time measurements using Spark Streaming.
+5. **Data Storage**: Stores processed data in PostgreSQL.
+6. **Orchestration and Monitoring**: Uses Airflow to manage tasks and monitor pipelines.
 
-Le projet est composé de plusieurs scripts Python et utilise Apache Airflow pour orchestrer les différentes étapes du pipeline ETL. Le pipeline fonctionne comme suit :
+---
 
-1. **Extraction des données** : Les données de qualité de l'air sont extraites de l'API OpenAQ et envoyées à Kafka, un broker de messages distribué.
-2. **Consommation des données** : Les données sont consommées depuis Kafka et stockées temporairement dans une base MongoDB NoSQL.
-3. **Transformation des données** : À l'aide d'Apache Spark, les données sont nettoyées, transformées, et des tables de dimension (location, time, parameter) ainsi qu'une table de faits sont créées selon un schéma en étoile.
-4. **Chargement des données** : Les tables dimensionnelles et factuelles sont ensuite chargées dans PostgreSQL pour une analyse efficace.
-5. **Orchestration** : Le processus global est orchestré par Airflow avec des tâches planifiées pour s'exécuter périodiquement (toutes les 10 minutes).
+## Project Architecture
 
-### Architecture de la Pipeline
+The pipeline consists of the following steps:
+1. **Data Fetching**: Extracts data from the OpenAQ API.
+2. **Data Streaming**: Publishes the extracted data to Kafka topics.
+3. **Data Processing**: Uses Spark to process and enrich the data.
+4. **Data Storage**: Writes processed data to PostgreSQL.
+5. **Real-Time Streaming**: Uses Spark Streaming for real-time measurements.
 
-Voici un schéma illustrant le flux de données et les interactions entre les différentes composantes du système :
+![Project Architecture](img/Project_architecture.jpeg)
 
-![Schéma de la Pipeline](img/Project_architecture.jpeg)
+---
 
+## Prerequisites
+
+Before running the project, ensure you have:
+- [Docker](https://www.docker.com/)
+- [Docker Compose](https://docs.docker.com/compose/)
+
+---
+
+## Project Structure
+
+---
+
+## Getting Started
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/Mehdi-24-K4/DataEngProject.git
+cd DataEngProject
+```
+
+<!-- 
 ## Technologies Utilisées
 
 - **Apache Kafka** : Broker de messages distribué pour la gestion des flux de données.
@@ -110,4 +139,4 @@ Ce projet met en place un pipeline ETL robuste et scalable pour collecter, trans
 
 ## Auteur
 
-*Ouazzani Jamil Mehdi* - [Votre profil GitHub](https://github.com/Mehdi-24-K4)
+*Ouazzani Jamil Mehdi* - [Votre profil GitHub](https://github.com/Mehdi-24-K4) -->
