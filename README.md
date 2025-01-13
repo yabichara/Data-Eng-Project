@@ -37,7 +37,37 @@ Before running the project, ensure you have:
 Here is the following project structure:
 
 ```
-DataEngProject/ ├── .dockerignore ├── airflow_requirements.txt ├── docker-compose.yml ├── Dockerfile.airflow ├── Dockerfile.spark ├── Dockerfile.supervisor ├── Grafana_Dash.png ├── init-topics.sh ├── README.md ├── requirements.txt ├── init.py ├── dags/ │ └── initialize_pipeline_dag.py ├── img/ │ └── Project_architecture.jpeg ├── jars/ │ ├── postgresql-42.6.2.jar │ └── spark-sql-kafka-0-10_2.12-3.5.4.jar ├── kafkaScripts/ │ ├── KafkaProducer.py │ ├── OpenAQCollector.py │ └── init.py ├── postgres-init/ │ ├── airflow-init.sql │ └── init.sql └── spark/ ├── spark_process_dim_data.py ├── spark_stream.py ├── supervisor.py └── init.py
+DataEngProject/ 
+├── .dockerignore 
+├── airflow_requirements.txt 
+├── docker-compose.yml 
+├── Dockerfile.airflow 
+├── Dockerfile.spark 
+├── Dockerfile.supervisor 
+├── Grafana_Dash.png 
+├── init-topics.sh 
+├── README.md 
+├── requirements.txt 
+├── init.py 
+├── dags/ 
+│ └── initialize_pipeline_dag.py 
+├── img/ 
+│ └── Project_architecture.jpeg 
+├── jars/ 
+│ ├── postgresql-42.6.2.jar 
+│ └── spark-sql-kafka-0-10_2.12-3.5.4.jar 
+├── kafkaScripts/ 
+│ ├── KafkaProducer.py 
+│ ├── OpenAQCollector.py 
+│ └── init.py 
+├── postgres-init/ 
+│ ├── airflow-init.sql 
+│ └── init.sql 
+└── spark/ 
+  ├── spark_process_dim_data.py 
+  ├── spark_stream.py 
+  ├── supervisor.py 
+  └── init.py
 ```
 ---
 
