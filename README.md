@@ -76,6 +76,17 @@ Enable and trigger the DAG named ```initialize_pipeline_dag```.
 
 ### 5. Monitor Spark Streaming
 Once the DAG completes processing the dimensions, the Supervisor container detects when the last task begins and automatically triggers the Spark Streaming job. This job processes real-time measurements from Kafka and stores them in PostgreSQL.
+
+## 🛠 How It Works
+
+### 1. Batch Processing (Airflow DAG)
+- Step 1: Extract data from the OpenAQ API using the ```initialize_pipeline_dag.py```.
+- Step 2: Process the data with Spark and store it in PostgreSQL via temporary tables.
+- Step 3: Kafka topics are used as intermediaries for dimension data (parameters, stations, country).
+### 2. Real-Time Processing (Spark Streaming)
+- Step 1: Supervisor container detects the final task in the DAG.
+- Step 2: Triggers Spark Streaming (```spark_stream.py```) to process the latest measurement data.
+- Step 3: Data is stored in PostgreSQL in near real-time.
 <!-- 
 ## Technologies Utilisées
 
