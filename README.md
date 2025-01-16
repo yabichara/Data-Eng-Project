@@ -180,7 +180,7 @@ Grafana is used to visualize the data stored in PostgreSQL from the pipeline. It
     - *Username*: ```your_user```
     - *Password*: ```your_password```
   - Make sure to select the `*disable* option in the ```TLS/SSL Mode```.
-  - ![Project Architecture](img/Grafana_postgres.png.jpeg)
+  - ![Project Architecture](img/Grafana_postgres.png)
 
   - Save and test the connection to ensure it's successful.
 ##### 4. *Create Dashboards*:
