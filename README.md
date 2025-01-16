@@ -179,6 +179,10 @@ Grafana is used to visualize the data stored in PostgreSQL from the pipeline. It
     - *Database*: ```openaq```
     - *Username*: ```your_user```
     - *Password*: ```your_password```
+  - Make sure to select the `*disable* option in the ```TLS/SSL Mode```.
+  - ![Project Architecture](img/Grafana_postgres.png.jpeg)
+
+  - Save and test the connection to ensure it's successful.
 ##### 4. *Create Dashboards*:
   - Use the PostgreSQL data source to query and visualize data.
   - Customize panels to represent your data using graphs, tables, and heatmaps. 
