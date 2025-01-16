@@ -107,9 +107,11 @@ The following services will be deployed:
 - Log in with the default credentials:
   - Username: ```airflow```
   - Password: ```airflow```.
+
     ![airflow_ui](img/Airflow_UI.png)
   
 Enable and trigger the DAG named ```initialize_pipeline_dag```.
+
 ![airflow_dag](img/airflow_dag.png)
 
 ### 5. Monitor Spark Streaming
@@ -133,7 +135,15 @@ Once the DAG completes processing the dimensions, the Supervisor container detec
 - Trigger the ```initialize_pipeline_dag``` DAG.
 - Monitor the progress of each task in the Airflow UI.
 ### 2. Kafka Topics:
-- Use Kafka CLI or tools to check data ingestion into topics.
+- Use Kafka CLI.
+- Acess the control center UI by opening  your browser and going to http://localhost:8086:
+
+![controlcenter_ui](img/control_center_UI.png)
+
+- Check data ingestion into topics.
+
+![kafka_topics](img/kafka_topics.png)
+
 ### 3. PostgreSQL Database:
 - Connect to the database to validate data storage by:
 ```bash
