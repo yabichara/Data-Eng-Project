@@ -193,11 +193,6 @@ Grafana is used to visualize the data stored in PostgreSQL from the pipeline. It
 #### 3. Database Connection:
   - Verify PostgreSQL connection parameters in the environment variables or configuration files.
 
-## 🚀 Future Improvements
-- Add Grafana for better visualization of metrics.
-- Enhance error handling in the data pipeline.
-- Implement automated tests for DAGs and Spark scripts.
-
 ## License
 This project is licensed under the MIT License. See the LICENSE file for details.
 
