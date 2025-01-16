@@ -110,8 +110,8 @@ The following services will be deployed:
 
     ![airflow_ui](img/Airflow_UI.png)
   
-Enable and trigger the DAG named ```initialize_pipeline_dag```.
-
+- Enable and trigger the DAG named ```initialize_pipeline_dag```.
+- Monitor the progress of each task in the Airflow UI.
 ![airflow_dag](img/airflow_dag.png)
 
 ### 5. Monitor Spark Streaming
@@ -119,24 +119,7 @@ Once the DAG completes processing the dimensions, the Supervisor container detec
 
 ![supervisor](img/spark_supervisor.png)
 
-## 🛠 How It Works
-
-### 1. Batch Processing (Airflow DAG)
-- **Step 1**: Extract data from the OpenAQ API using the ```initialize_pipeline_dag.py```.
-- **Step 2**: Process the data with Spark and store it in PostgreSQL via temporary tables.
-- **Step 3**: Kafka topics are used as intermediaries for dimension data (parameters, stations, country).
-### 2. Real-Time Processing (Spark Streaming)
-- **Step 1**: Supervisor container detects the final task in the DAG.
-- **Step 2**: Triggers Spark Streaming (```spark_stream.py```) to process the latest measurement data.
-- **Step 3**: Data is stored in PostgreSQL in near real-time.
-
-## 🧪 Testing the Pipeline
-
-### 1. Airflow DAG:
-- Open the Airflow UI.
-- Trigger the ```initialize_pipeline_dag``` DAG.
-- Monitor the progress of each task in the Airflow UI.
-### 2. Kafka Topics:
+### 6. Kafka Topics
 - Use Kafka CLI.
 - Acess the control center UI by opening  your browser and going to http://localhost:8086:
 
@@ -146,7 +129,7 @@ Once the DAG completes processing the dimensions, the Supervisor container detec
 
 ![kafka_topics](img/kafka_topics.png)
 
-### 3. PostgreSQL Database:
+### 7. PostgreSQL
 - Connect to the database to validate data storage by:
 ```bash
 docker exec -it postgres psql -U your_user -d openaq
@@ -155,29 +138,23 @@ docker exec -it postgres psql -U your_user -d openaq
 ```bash
 psql -U your_user -d openaq
 ```
-
-## PostgreSQL Schema
 The database consists of:
 - ```country```: Stores country dimension data.
 - ```parameter```: Stores parameter dimension data.
 - ```location```: Stores location dimension data.
 - ```latest_measurements```: Stores real-time measurement data.
 
-## Logs and Monitoring
-- Logs for each container are stored in the ```/logs/``` directory within the containers.
-- Use Airflow to monitor task progress and job status.
-- Spark logs are available in the ```spark/logs``` directory.
+![ShemaRelationnel]()
 
-## Grafana
-### Overview
+### 8. Grafana
 Grafana is used to visualize the data stored in PostgreSQL from the pipeline. It provides an intuitive interface to explore real-time air quality data and historical records.
 
-### Key Features
+#### Key Features
 - *Data Visualization*: Create interactive dashboards to explore dimensions like parameters, locations, and country statistics.
 - *Real-Time Insights*: Monitor real-time air quality data ingested and stored in PostgreSQL.
 - *Custom Dashboards*: Build customized visualizations tailored to your data needs.
 
-### Access Grafana
+#### Access Grafana
 ##### 1. *Open the Grafana UI*:
   - In your browser, navigate to: http://localhost:3000.
 
@@ -207,6 +184,24 @@ Grafana is used to visualize the data stored in PostgreSQL from the pipeline. It
 ##### 4. *Create Dashboards*:
   - Use the PostgreSQL data source to query and visualize data.
   - Customize panels to represent your data using graphs, tables, and heatmaps. 
+
+
+### 9. Logs and Monitoring
+- Logs for each container are stored in the ```/logs/``` directory within the containers.
+- Use Airflow to monitor task progress and job status.
+- Spark logs are available in the ```spark/logs``` directory.
+- Spark streaming logs are available in the spark-supervisor container.
+
+## 🛠 How It Works
+
+### 1. Batch Processing (Airflow DAG)
+- **Step 1**: Extract data from the OpenAQ API using the ```initialize_pipeline_dag.py```.
+- **Step 2**: Process the data with Spark and store it in PostgreSQL via temporary tables.
+- **Step 3**: Kafka topics are used as intermediaries for dimension data (parameters, stations, country).
+### 2. Real-Time Processing (Spark Streaming)
+- **Step 1**: Supervisor container detects the final task in the DAG.
+- **Step 2**: Triggers Spark Streaming (```spark_stream.py```) to process the latest measurement data.
+- **Step 3**: Data is stored in PostgreSQL in near real-time.
 
 ## Troubleshooting
 ### Common Issues
