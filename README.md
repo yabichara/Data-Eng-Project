@@ -154,25 +154,34 @@ The database consists of:
 - Use Airflow to monitor task progress and job status.
 - Spark logs are available in the ```spark/logs``` directory.
 
-## Grafana Monitoring
+## Grafana
 ### Overview
-Grafana is used to monitor metrics and visualize data from the pipeline in a user-friendly dashboard. It connects directly to PostgreSQL to query real-time and historical data.
+Grafana is used to visualize the data stored in PostgreSQL from the pipeline. It provides an intuitive interface to explore real-time air quality data and historical records.
 
 ### Key Features
-- *Pipeline Metrics*: View key metrics like task success rates and durations.
-- *Data Insights*: Monitor real-time air quality data stored in PostgreSQL.
-- *Custom Dashboards*: Visualize dimensions like parameters, locations, and country statistics.
+- *Data Visualization*: Create interactive dashboards to explore dimensions like parameters, locations, and country statistics.
+- *Real-Time Insights*: Monitor real-time air quality data ingested and stored in PostgreSQL.
+- *Custom Dashboards*: Build customized visualizations tailored to your data needs.
 
 ### Access Grafana
-1. Open your browser and go to: http://localhost:3000.
-2. Log in with default credentials:
-  - Username: admin
-  - Password: admin.
-3. Add a PostgreSQL data source with the following details:
-  - Host: postgres:5432
-  - Database: openaq
-  - Username: your_user
-  - Password: your_password.
+1. *Open the Grafana UI*:
+  - In your browser, navigate to: http://localhost:3000.
+2. *Log in to Grafana*:
+  - Default credentials:
+    - Username: admin
+    - Password: admin.
+  - You can change the credentials after logging in for the first time.
+3. *Configure PostgreSQL as a Data Source*:
+  - Go to the *Configuration* tab and select *Data Sources*.
+  - Click *Add Data Source* and select *PostgreSQL*.
+  - Enter the following details:
+    - *Host*: ```postgres:5432```
+    - *Database*: ```openaq```
+    - *Username*: ```your_user```
+    - *Password*: ```your_password```
+4. *Create Dashboards*:
+  - Use the PostgreSQL data source to query and visualize data.
+  - Customize panels to represent your data using graphs, tables, and heatmaps. 
 
 ## Troubleshooting
 ### Common Issues
