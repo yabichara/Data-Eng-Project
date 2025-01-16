@@ -166,6 +166,9 @@ Grafana is used to visualize the data stored in PostgreSQL from the pipeline. It
 ### Access Grafana
 ##### 1. *Open the Grafana UI*:
   - In your browser, navigate to: http://localhost:3000.
+
+    ![Grafana_UI](img/Grafana_UI.png)
+
 ##### 2. *Log in to Grafana*:
   - Default credentials:
     - Username: admin
@@ -174,14 +177,18 @@ Grafana is used to visualize the data stored in PostgreSQL from the pipeline. It
 ##### 3. *Configure PostgreSQL as a Data Source*:
   - Go to the *Configuration* tab and select *Data Sources*.
   - Click *Add Data Source* and select *PostgreSQL*.
+
+    ![Grafana_data_source](img/Grafana_data_source.png)
+
   - Enter the following details:
     - *Host*: ```postgres:5432```
     - *Database*: ```openaq```
     - *Username*: ```your_user```
     - *Password*: ```your_password```
   - Make sure to select the `*disable* option in the ```TLS/SSL Mode```.
-  - ![Project Architecture](img/Grafana_postgres.png)
-
+    
+    ![Grafana_postgres](img/Grafana_postgres.png)
+  
   - Save and test the connection to ensure it's successful.
 ##### 4. *Create Dashboards*:
   - Use the PostgreSQL data source to query and visualize data.
