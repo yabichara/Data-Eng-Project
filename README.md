@@ -117,6 +117,8 @@ Enable and trigger the DAG named ```initialize_pipeline_dag```.
 ### 5. Monitor Spark Streaming
 Once the DAG completes processing the dimensions, the Supervisor container detects when the last task begins and automatically triggers the Spark Streaming job. This job processes real-time measurements from Kafka and stores them in PostgreSQL.
 
+![supervisor](img/spark_supervisor.png)
+
 ## 🛠 How It Works
 
 ### 1. Batch Processing (Airflow DAG)
