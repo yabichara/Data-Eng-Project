@@ -103,12 +103,14 @@ The following services will be deployed:
 - Grafana
 
 ### 4. Access Airflow UI
-- Open your browser and go to ```http://localhost:8080```.
+- Open your browser and go to ```http://localhost:8086```.
 - Log in with the default credentials:
   - Username: ```airflow```
   - Password: ```airflow```.
+    ![airflow_ui](img/Airflow_UI.png)
   
 Enable and trigger the DAG named ```initialize_pipeline_dag```.
+![airflow_dag](img/airflow_dag.png)
 
 ### 5. Monitor Spark Streaming
 Once the DAG completes processing the dimensions, the Supervisor container detects when the last task begins and automatically triggers the Spark Streaming job. This job processes real-time measurements from Kafka and stores them in PostgreSQL.
