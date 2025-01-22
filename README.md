@@ -21,7 +21,7 @@ The pipeline consists of the following steps:
 4. **Data Storage**: Writes processed data to PostgreSQL.
 5. **Real-Time Streaming**: Uses Spark Streaming for real-time measurements.
 
-![Project Architecture](img/Project_architecture.jpeg)
+![Project Architecture](img/architecture.png)
 
 ---
 
