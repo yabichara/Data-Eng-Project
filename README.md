@@ -1,6 +1,9 @@
 # OpenAQ Data Engineering Project
 
 This project is a robust pipeline for extracting, processing, and storing air quality data from the [OpenAQ API](https://docs.openaq.org/). It integrates real-time data processing, batch processing, and streaming using cutting-edge technologies like Kafka, Spark, PostgreSQL, and Airflow.
+> ⚠️ This project was originally developed in collaboration with [Mehdi Ouazzani Jamil](https://github.com/Mehdi-24-K4) as a personal initiative to explore and learn data engineering tools and practices.  
+> It was first published on his GitHub, and is now also hosted here to reflect my contributions and progress.
+
 
 ## Key Features
 1. **Data Extraction**: Fetches air quality data (parameters, locations, and countries) from the OpenAQ API.
@@ -76,7 +79,7 @@ DataEngProject/
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/Mehdi-24-K4/DataEngProject.git
+git clone https://github.com/yabichara/Data-Eng-Project
 cd DataEngProject
 ```
 
@@ -219,5 +222,6 @@ This project is licensed under the MIT License. See the LICENSE file for details
 ## Auteur
 
 *Ouazzani Jamil Mehdi* - [Votre profil GitHub](https://github.com/Mehdi-24-K4)
+*Yassine Bichara* - [Votre profil GitHub](https://github.com/yabichara)
 
 This README provides all the necessary information while being concise and professional. Let me know if you'd like further refinements!
